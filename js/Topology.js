@@ -146,9 +146,10 @@ class Topology {
             y: parseInt((point.y - this.offsetY - FIELD_SIZE) / FIELD_SIZE)
         }
     }
+
     // Будет принимать корабль в качестве аргумента и возвращать true если можно разместить
     canStay(sheep) {
-        // проверка за ранее можно ли размещать корабль
+        // проверка за ранее можно ли размещать корабль, но он больше 10 и не сможет появиться
         if (sheep.direct === 0 && sheep.x + sheep.size > 10) {
             return false
         }
@@ -190,37 +191,36 @@ class Topology {
                     }
                 }
             }
-
-            if (sheep.direct === 0) {
-                for (let i = 0; i < sheep.size; i++) {
-                    if (!map[sheep.y][sheep.x + i]) {
-                        return false
-                    }
-                }
-            } else {
-                for (let i = 0; i < sheep.size; i++) {
-                    if (!map[sheep.y + i][sheep.x]) {
-                        return false
-                    }
-                }
-            }
-
-            return true
         }
 
+        // Убеждаемся что на каждой клеточке где хочет расположится корабль - находится true
+        if (sheep.direct === 0) {
+            for (let i = 0; i < sheep.size; i++) {
+                if (!map[sheep.y][sheep.x + i]) {
+                    return false
+                }
+            }
+        } else {
+            for (let i = 0; i < sheep.size; i++) {
+                if (!map[sheep.y + i][sheep.x]) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
 
 
-    // Слайчайным образом будет заполнять корабли на нашем поле Topology
+    // Случайным образом будет заполнять корабли на нашем поле Topology
     randoming() {
-        this.sheeps = []
+        this.sheeps = [] // очищаем все корабли
 
         for (let size = 4; size > 0; size--) {
             for (let n = 0; n < 5 - size; n++) {
-                let flag = false
+                let flag = false // опускаем флаг
 
-                while (!flag) {
+                while (!flag) { // пока флаг опущен размешаем корабль
                     const sheep = {
                         x: Math.floor(Math.random() * 10),
                         y: Math.floor(Math.random() * 10),
@@ -230,7 +230,7 @@ class Topology {
 
                     if (this.canStay(sheep)) {
                         this.addSheeps(sheep)
-                        flag = true
+                        flag = true // поднимаем флаг и говорим циклу while что корабль размещен, продолжай логику
                     }
                 }
             }
