@@ -27,8 +27,8 @@ class Topology {
         }
         return this
     };
-    // создаем метод который принимает в себя context и пробегается по всем кораблям
 
+    // создаем метод который принимает в себя context и пробегается по всем кораблям
     draw(context) {
         this.drawFields(context) // Передаем контекст, ресуем поле
 
@@ -131,6 +131,7 @@ class Topology {
 
         return this
     }
+
     // будет возращать true или false в зависимости от того находится ли точка которую мы передали ей в качестве элемента над Topology полем
     isPointUnder(point) {
         if (
@@ -143,11 +144,11 @@ class Topology {
         }
         return true
     }
+
     getCoordinats(point) {
         if (!this.isPointUnder(point)) { // если эта точка не находится над полем
             return false
         }
-
 
         const x = parseInt((point.x - this.offsetX - FIELD_SIZE) / FIELD_SIZE);
         const y = parseInt((point.y - this.offsetY - FIELD_SIZE) / FIELD_SIZE);
@@ -251,7 +252,7 @@ class Topology {
     }
 
     update() {
-        this.check = this.checks
+        this.checks = this.checks
             .map(check => JSON.stringify(check))
             .filter((e, i, l) => l.lastIndexOf(e) === i)
             .map(check => JSON.parse(check))

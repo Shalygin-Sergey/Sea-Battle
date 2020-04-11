@@ -1,7 +1,7 @@
 class Game {
     constructor() {
         this.stage = 'preparation';
-        this.playerOrder = true;
+        this.playerOrder = true; // ход игрока, false - компа
 
         this.player = new Topology({
             offsetX: 60, // при отрисовке, смещаем на 60px от верхнего левого края
@@ -16,28 +16,6 @@ class Game {
 
         // отрисовываем рандомно корабли на поле компьютера
         this.computer.randoming()
-
-
-        /*  this.player
-             .addSheeps({
-                 x: 0,
-                 y: 0,
-                 direct: 0,
-                 size: 3
-             }, {
-                 x: 0,
-                 y: 2,
-                 direct: 1,
-                 size: 4
-             }, )
-             .addChecks({
-                 x: 5,
-                 y: 5,
-             }, {
-                 x: 5,
-                 y: 4,
-             }); */
-
         this.player.randoming();
         this.stage = "play";
 
@@ -92,15 +70,16 @@ class Game {
         if (mouse.left && !mouse.pleft) {
             this.player.addSheeps(sheep)
 
-            if (this.player.sheeps.length == 10) {
+            if (this.player.sheeps.length === 10) {
                 this.stage = "play"
             }
         }
     }
 
     tickPlay(timestamp) {
+        // если ход игрока
         if (this.playerOrder) {
-            if (this.computer.isPointUnder(mouse)) {
+            if (!this.computer.isPointUnder(mouse)) { // если мышка не над полем комп
                 return
             }
 
@@ -110,7 +89,9 @@ class Game {
                 this.computer.addChecks(point)
                 this.computer.update()
             }
-        } else {
+        }
+        // ход компа
+        else {
 
         }
     }
