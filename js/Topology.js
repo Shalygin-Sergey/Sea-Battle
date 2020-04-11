@@ -2,10 +2,14 @@ class Topology {
     constructor(param) {
         this.offsetX = param.offsetX; // отступы от верхнего левого края для отрисовки нашей Topology
         this.offsetY = param.offsetY;
+        this.secret = param.secret || false
 
         this.sheeps = []; // массив для кораблей
         this.checks = []; // массив для проверки клеточек по которым уже стреляли
+        this.kills = [];
+        this.injuries = [];
     };
+
     addSheeps(...sheeps) {
         for (const sheep of sheeps) { // пробежимся по короблям которые нужно добавить
             if (!this.sheeps.includes(sheep)) { // если еще не добавили
@@ -27,9 +31,13 @@ class Topology {
 
     draw(context) {
         this.drawFields(context) // Передаем контекст, ресуем поле
-        for (const sheep of this.sheeps) { // пробежались по кораблям
-            this.drawSheep(context, sheep) // нарисовали эти корабли
+
+        if (!this.secret) {
+            for (const sheep of this.sheeps) { // пробежались по кораблям
+                this.drawSheep(context, sheep) // нарисовали эти корабли
+            }
         }
+
         for (const check of this.checks) { // пробежались по чекам
             this.drawCheck(context, check) // нарисовали чеки
         }
@@ -141,9 +149,12 @@ class Topology {
         }
 
 
+        const x = parseInt((point.x - this.offsetX - FIELD_SIZE) / FIELD_SIZE);
+        const y = parseInt((point.y - this.offsetY - FIELD_SIZE) / FIELD_SIZE);
+
         return {
-            x: parseInt((point.x - this.offsetX - FIELD_SIZE) / FIELD_SIZE),
-            y: parseInt((point.y - this.offsetY - FIELD_SIZE) / FIELD_SIZE)
+            x: Math.max(0, Math.min(9, x)),
+            y: Math.max(0, Math.min(9, y))
         }
     }
 
@@ -233,6 +244,53 @@ class Topology {
                         flag = true // поднимаем флаг и говорим циклу while что корабль размещен, продолжай логику
                     }
                 }
+            }
+        }
+
+        return true
+    }
+
+    update() {
+        this.check = this.checks
+            .map(check => JSON.stringify(check))
+            .filter((e, i, l) => l.lastIndexOf(e) === i)
+            .map(check => JSON.parse(check))
+
+        const map = [
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false],
+            [false, false, false, false, false, false, false, false, false, false]
+        ]
+
+        // заполнение false там, где корабля не может быть
+        for (const sheep of this.sheeps) {
+            if (sheep.direct === 0) {
+                for (let x = sheep.x; x < sheep.x + sheep.size; x++) {
+                    if (map[sheep.y] && !map[sheep.y][x]) {
+                        map[sheep.y][x] = true
+                    }
+                }
+            } else {
+                for (let y = sheep.y; y < sheep.y + sheep.size; y++) {
+                    if (map[y] && !map[y][sheep.x]) {
+                        map[y][sheep.x] = true
+                    }
+                }
+            }
+        }
+        for (const check of this.checks) {
+            if (map[check.y][check.x]) {
+                this.injuries.push(check)
+
+                const index = this.checks.indexOf(check)
+                this.checks.splice(index, 1)
             }
         }
     }
