@@ -86,13 +86,21 @@ class Game {
             const point = this.computer.getCoordinats(mouse);
 
             if (mouse.left && !mouse.pleft) {
-                this.computer.addChecks(point)
-                this.computer.update()
+                this.computer.addChecks(point);
+                this.computer.update();
+                this.playerOrder = false
             }
         }
         // ход компа
         else {
+            const point = {
+                x: Math.floor(Math.random() * 10),
+                y: Math.floor(Math.random() * 10)
+            }
 
+            this.player.addChecks(point);
+            this.player.update();
+            this.playerOrder = true
         }
     }
 };

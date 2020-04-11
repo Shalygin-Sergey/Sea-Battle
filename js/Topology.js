@@ -41,6 +41,41 @@ class Topology {
         for (const check of this.checks) { // пробежались по чекам
             this.drawCheck(context, check) // нарисовали чеки
         }
+
+        for (const injury of this.injuries) { // пробежались по раненым
+            this.drawInjury(context, injury) // нарисовали крест
+        }
+
+        return this
+    }
+
+    // отрисовка красного крестика ранен
+    drawInjury(context, injury) {
+        context.strokeStyle = 'red';
+        context.lineWidth = 1.6;
+
+        context.beginPath()
+        context.moveTo( // прямая линия
+            this.offsetX + injury.x * FIELD_SIZE + FIELD_SIZE,
+            this.offsetY + injury.y * FIELD_SIZE + FIELD_SIZE
+        )
+        context.lineTo(
+            this.offsetX + injury.x * FIELD_SIZE + FIELD_SIZE * 2,
+            this.offsetY + injury.y * FIELD_SIZE + FIELD_SIZE * 2
+        )
+        context.stroke() // нарисовать линии
+
+        context.beginPath()
+        context.moveTo( // прямая линия от
+            this.offsetX + injury.x * FIELD_SIZE + FIELD_SIZE * 2,
+            this.offsetY + injury.y * FIELD_SIZE + FIELD_SIZE
+        )
+        context.lineTo( // прямая линия до
+            this.offsetX + injury.x * FIELD_SIZE + FIELD_SIZE,
+            this.offsetY + injury.y * FIELD_SIZE + FIELD_SIZE * 2
+        )
+        context.stroke() // нарисовать линии
+
         return this
     }
 
