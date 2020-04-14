@@ -44,3 +44,8 @@ function drawGrid() { // Эта функция должна пройтись п�
     context.lineTo(canvas.width, 75);
     context.stroke()
 }
+// возвращает случайные элементы из массива
+function getRandomFrom(array) {
+    const index = Math.floor(Math.random() * array.length)
+    return array[index]
+}

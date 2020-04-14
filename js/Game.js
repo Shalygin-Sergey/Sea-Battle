@@ -16,8 +16,7 @@ class Game {
 
         // отрисовываем рандомно корабли на поле компьютера
         this.computer.randoming()
-        this.player.randoming();
-        this.stage = "play";
+
 
         requestAnimationFrame(x => this.tick(x)) // регистрирует вывод функции перед обновлением экрана
     };
@@ -37,9 +36,19 @@ class Game {
             this.tickPreparation(timestamp)
         } else if (this.stage === "play") {
             this.tickPlay(timestamp)
+
+            if (this.computer.isEnd()) {
+                this.stage = 'end'
+                alert('Поздравляю с победой')
+            } else if (this.player.isEnd()) {
+                this.stage = 'end'
+                alert('Увы, попробуй еще раз')
+            }
         }
 
         mouse.pleft = mouse.left; // отследим нажатие левой клавиши мыши
+
+
     }
     // На этом этапе расставляем корабли
     tickPreparation(timestamp) {
@@ -88,18 +97,22 @@ class Game {
             if (mouse.left && !mouse.pleft) {
                 this.computer.addChecks(point);
                 this.computer.update();
-                this.playerOrder = false
+
+                if (!this.computer.isSheepUnderPoint(point)) {
+                    this.playerOrder = false
+                }
             }
         }
         // ход компа
         else {
-            const point = {
-                x: Math.floor(Math.random() * 10),
-                y: Math.floor(Math.random() * 10)
-            }
+            const point = getRandomFrom(this.player.getUnknownFields())
 
             this.player.addChecks(point);
             this.player.update();
+
+            if (!this.player.isSheepUnderPoint(point)) {
+                this.playerOrder = false
+            }
             this.playerOrder = true
         }
     }

@@ -292,6 +292,17 @@ class Topology {
             .filter((e, i, l) => l.lastIndexOf(e) === i)
             .map(check => JSON.parse(check))
 
+        const map = this.getSheepsMap()
+        for (const check of this.checks) {
+            if (map[check.y][check.x]) {
+                this.injuries.push(check)
+
+                const index = this.checks.indexOf(check)
+                this.checks.splice(index, 1)
+            }
+        }
+    }
+    getSheepsMap() {
         const map = [
             [false, false, false, false, false, false, false, false, false, false],
             [false, false, false, false, false, false, false, false, false, false],
@@ -321,13 +332,58 @@ class Topology {
                 }
             }
         }
-        for (const check of this.checks) {
-            if (map[check.y][check.x]) {
-                this.injuries.push(check)
+        return map
+    }
 
-                const index = this.checks.indexOf(check)
-                this.checks.splice(index, 1)
+    isSheepUnderPoint(point) {
+        const map = this.getSheepsMap()
+        return map[point.y][point.x]
+    }
+
+    getUnknownFields() {
+        const unknownFields = []
+
+        for (let y = 0; y < 10; y++) {
+            for (let x = 0; x < 10; x++) {
+                let flag = true
+
+                for (const check of this.checks) {
+                    if (check.x === x && check.y === y) {
+                        flag = false
+                        break
+                    }
+                }
+                if (flag) {
+                    for (const injury of this.injuries) {
+                        if (injury.x === x && injury.y === y) {
+                            flag = false
+                            break
+                        }
+                    }
+                }
+                if (flag) {
+                    unknownFields.push({
+                        x,
+                        y
+                    })
+                }
             }
         }
+
+
+        return unknownFields
+    }
+
+    isEnd() {
+        const map = this.getSheepsMap()
+        for (const injury of this.injuries) {
+            map[injury.y][injury.x] = false
+        }
+        for (let status of map.flat()) {
+            if (status) {
+                return false
+            }
+        }
+        return true
     }
 };
