@@ -1,3 +1,46 @@
 canvas {
     border: 1px solid #000;
 }
+
+.hello {
+    font-weight: 500;
+    padding-top: 10px;
+    line-height: 2;
+    font-family: 'Heretic', sans-serif;
+}
+
+.title {
+    text-align: center;
+}
+
+.rules {
+    margin-left: 20px;
+    font-weight: 500;
+    padding-top: 10px;
+    line-height: 2;
+    font-family: 'Heretic', sans-serif;
+    border: 1px dashed black;
+    width: 400px;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    padding-left: 10px;
+}
+
+.gamers {
+    font-family: 'Heretic', sans-serif;
+    text-transform: uppercase;
+    color: rgb(4, 0, 255);
+    font-weight: 700;
+}
+
+.player {
+    margin-left: 15%;
+    display: inline-block;
+}
+
+.computer {
+    display: inline-block;
+    margin-left: 40%;
+}
